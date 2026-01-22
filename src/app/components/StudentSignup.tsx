@@ -1,10 +1,9 @@
 import { motion } from "motion/react";
 import { useState, useEffect } from "react";
-import { GraduationCap, Mail, Lock, Eye, EyeOff, ArrowLeft, BookOpen, Calendar, MapPin, User, Phone, CheckCircle } from "lucide-react";
+import { GraduationCap, Mail, Lock, Eye, EyeOff, ArrowLeft, BookOpen, Calendar, MapPin, User, Phone } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { CollegeSearchDropdown } from "./CollegeSearchDropdown";
 import { BranchDropdown } from "./BranchDropdown";
-import { EmailLinkVerificationModal } from "./EmailLinkVerificationModal";
 
 interface StudentSignupProps {
   onBack: () => void;
@@ -34,15 +33,13 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
   const [locationError, setLocationError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [showVerificationModal, setShowVerificationModal] = useState(false);
   const { signup } = useAuth();
   
   console.log('📍 UserLocation received:', userLocation);
 
   // Reset email verification when email changes
   useEffect(() => {
-    setIsEmailVerified(false);
+    // Email changes - no verification needed anymore
   }, [formData.email]);
 
   useEffect(() => {
@@ -114,15 +111,46 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
     e.preventDefault();
     setError(null);
     
-    // Validate email is verified
-    if (!isEmailVerified) {
-      setError("Please verify your email address first!");
-      return;
-    }
-    
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match!");
+      return;
+    }
+
+    // Validate password length
+    if (formData.password.length < 6) {
+      setError("Password should be at least 6 characters");
+      return;
+    }
+
+    // Validate required fields
+    if (!formData.fullName.trim()) {
+      setError("Full name is required");
+      return;
+    }
+
+    if (!formData.email.trim()) {
+      setError("Email is required");
+      return;
+    }
+
+    if (!formData.phone.trim()) {
+      setError("Phone number is required");
+      return;
+    }
+
+    if (!formData.college) {
+      setError("College is required");
+      return;
+    }
+
+    if (!formData.branch) {
+      setError("Branch is required");
+      return;
+    }
+
+    if (!formData.year) {
+      setError("Year is required");
       return;
     }
 
@@ -135,26 +163,6 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleVerifyEmail = () => {
-    // Validate email format before opening modal
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim()) {
-      setError("Please enter your email address");
-      return;
-    }
-    if (!emailRegex.test(formData.email)) {
-      setError("Please enter a valid email address");
-      return;
-    }
-    setError(null);
-    setShowVerificationModal(true);
-  };
-
-  const handleEmailVerified = () => {
-    setIsEmailVerified(true);
-    setShowVerificationModal(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -261,47 +269,23 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
               </div>
             </div>
 
-            {/* Email Field with Verify Button */}
+            {/* Email Field */}
             <div>
               <label htmlFor="email" className="block font-semibold text-gray-700 dark:text-gray-300 mb-2">
                 Email Address
-                {isEmailVerified && (
-                  <span className="ml-2 text-green-600 dark:text-green-400 text-sm">
-                    ✓ Verified
-                  </span>
-                )}
               </label>
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    disabled={isEmailVerified}
-                    className={`w-full pl-12 pr-4 py-3 rounded-2xl border-2 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-600 transition-all ${
-                      isEmailVerified 
-                        ? 'border-green-500 dark:border-green-400 bg-green-50 dark:bg-green-900/20' 
-                        : 'border-gray-900 dark:border-gray-100'
-                    }`}
-                    placeholder="your.email@example.com"
-                  />
-                  {isEmailVerified && (
-                    <CheckCircle className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-green-500" />
-                  )}
-                </div>
-                {!isEmailVerified && (
-                  <button
-                    type="button"
-                    onClick={handleVerifyEmail}
-                    className="px-4 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-600 dark:to-indigo-600 text-white font-semibold rounded-2xl border-2 border-gray-900 dark:border-gray-100 hover:shadow-lg transition-all whitespace-nowrap"
-                  >
-                    Verify
-                  </button>
-                )}
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-gray-900 dark:border-gray-100 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-600 transition-all"
+                  placeholder="your.email@example.com"
+                />
               </div>
             </div>
 
@@ -599,15 +583,8 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
         />
       </motion.div>
 
-      {/* Email Link Verification Modal */}
-      <EmailLinkVerificationModal
-        email={formData.email}
-        userName={formData.fullName}
-        isOpen={showVerificationModal}
-        onClose={() => setShowVerificationModal(false)}
-        onVerified={handleEmailVerified}
-        formData={formData}
-      />
+          {/* Email Link Verification Modal */}
+      </motion.div>
     </div>
   );
 }
