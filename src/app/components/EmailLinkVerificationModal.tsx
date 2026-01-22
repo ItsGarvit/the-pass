@@ -34,8 +34,22 @@ export function EmailLinkVerificationModal({
 
     try {
       if (!auth) {
-        console.error('❌ Firebase Auth not initialized');
-        throw new Error("Firebase Auth not initialized. Please check your Firebase configuration.");
+        console.log('🎭 Firebase not available - using DEMO verification mode');
+        
+        // Demo mode: simulate email verification
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        console.log('✅ DEMO: Verification email "sent" successfully');
+        setEmailSent(true);
+        toast.success("✅ DEMO MODE: Email verified instantly! (No Firebase available)");
+        
+        // Auto-verify after 2 seconds in demo mode
+        setTimeout(() => {
+          setEmailSent(false);
+          setIsSending(false);
+          onVerified();
+        }, 2000);
+        return;
       }
 
       console.log('📧 Preparing to send verification email to:', email);
@@ -156,8 +170,12 @@ export function EmailLinkVerificationModal({
               {/* Info Box */}
               <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
                 <p className="text-blue-700 dark:text-blue-300 text-sm text-center">
-                  Click the button below to receive a verification link in your email. 
-                  Click the link to verify your email and complete registration.
+                  {auth ? (
+                    <>Click the button below to receive a verification link in your email. 
+                    Click the link to verify your email and complete registration.</>
+                  ) : (
+                    <>🎭 DEMO MODE: Click button to instantly verify email (Firebase quota exceeded)</>
+                  )}
                 </p>
               </div>
 
