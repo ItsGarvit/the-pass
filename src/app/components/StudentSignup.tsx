@@ -576,9 +576,6 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
           className="absolute bottom-20 left-10 w-16 h-16 bg-gradient-to-br from-yellow-300 to-orange-300 dark:from-yellow-500 dark:to-orange-500 rounded-[2rem] opacity-50 blur-sm -z-10"
         />
       </motion.div>
-
-          {/* Email Link Verification Modal */}
-      </motion.div>
     </div>
   );
 }
