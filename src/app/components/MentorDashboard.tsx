@@ -46,13 +46,23 @@ export function MentorDashboard() {
           <div className="flex flex-col md:flex-row gap-6">
             {/* Avatar */}
             <div className="flex justify-center md:justify-start">
-              <motion.div
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
-                className="bg-gradient-to-br from-purple-400 to-pink-400 dark:from-purple-500 dark:to-pink-500 p-6 rounded-3xl border-2 border-gray-900 dark:border-gray-100"
-              >
-                <BookOpen className="w-16 h-16 text-white" />
-              </motion.div>
+              {user.photoURL ? (
+                <motion.img
+                  src={user.photoURL}
+                  alt={user.fullName}
+                  animate={{ rotate: [0, 2, -2, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+                  className="w-32 h-32 rounded-3xl object-cover border-4 border-gray-900 dark:border-gray-100"
+                />
+              ) : (
+                <motion.div
+                  animate={{ rotate: [0, 5, -5, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, repeatDelay: 2 }}
+                  className="bg-gradient-to-br from-purple-400 to-pink-400 dark:from-purple-500 dark:to-pink-500 p-6 rounded-3xl border-2 border-gray-900 dark:border-gray-100 flex items-center justify-center w-32 h-32"
+                >
+                  <BookOpen className="w-16 h-16 text-white" />
+                </motion.div>
+              )}
             </div>
 
             {/* Profile Info */}

@@ -4,6 +4,7 @@ import { Check, MoreVertical, Pencil, Trash2, X } from "lucide-react";
 import type { ChatMessage as ChatMessageType } from "../types/chat";
 import { User } from "../contexts/AuthContext";
 import { getVisibleAvatarURL } from "../utils/profilePrivacy";
+import { Avatar } from "./Avatar";
 
 interface ChatMessageProps {
   message: ChatMessageType;
@@ -126,11 +127,7 @@ export function ChatMessage({
     >
       {/* Avatar */}
       {messageUser && currentUser && getVisibleAvatarURL(currentUser, messageUser) ? (
-        <img
-          src={messageUser.photoURL!}
-          alt={message.userName}
-          className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-        />
+        <Avatar user={messageUser} size="sm" />
       ) : (
         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0 ${
           message.userType === 'student' ? 'bg-blue-500' : 'bg-green-500'

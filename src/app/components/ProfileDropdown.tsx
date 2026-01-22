@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { LogOut, Trash2, ChevronDown, AlertTriangle } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { Avatar } from "./Avatar";
 
 interface ProfileDropdownProps {
   isDarkMode?: boolean;
@@ -51,9 +52,7 @@ export function ProfileDropdown({ isDarkMode = false }: ProfileDropdownProps) {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 focus:outline-none"
       >
-        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg hover:shadow-xl transition-shadow">
-          {user.fullName.charAt(0)}
-        </div>
+        <Avatar user={user} size="md" />
         <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""} ${isDarkMode ? "text-gray-400" : "text-gray-600"}`} />
       </button>
 
