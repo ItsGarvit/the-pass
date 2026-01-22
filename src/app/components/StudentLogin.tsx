@@ -36,11 +36,14 @@ export function StudentLogin({ onBack, onSwitchToSignup }: StudentLoginProps) {
     }
     
     setIsLoading(true);
+    console.log('🔐 Attempting login with email:', email.trim());
 
     try {
-      await login(email.trim(), password, 'student');
+      const result = await login(email.trim(), password, 'student');
+      console.log('✅ Login successful');
       // Success - the AuthContext will handle redirecting to dashboard
     } catch (err: any) {
+      console.error('❌ Login failed:', err.message);
       setError(err.message || "Invalid email or password. Please try again.");
     } finally {
       setIsLoading(false);

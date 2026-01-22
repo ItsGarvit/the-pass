@@ -12,8 +12,6 @@ interface StudentSignupProps {
 }
 
 export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: StudentSignupProps) {
-  console.log('🎓 StudentSignup component rendering');
-  
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -34,13 +32,6 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { signup } = useAuth();
-  
-  console.log('📍 UserLocation received:', userLocation);
-
-  // Reset email verification when email changes
-  useEffect(() => {
-    // Email changes - no verification needed anymore
-  }, [formData.email]);
 
   useEffect(() => {
     // Auto-fill region based on location
@@ -155,10 +146,13 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
     }
 
     setIsLoading(true);
+    console.log('📝 Creating student account for:', formData.fullName, formData.email);
     try {
       await signup(formData, formData.password, 'student');
+      console.log('✅ Signup successful');
       // Success - the AuthContext will handle redirecting to dashboard
     } catch (err: any) {
+      console.error('❌ Signup failed:', err.message);
       setError(err.message || "Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
