@@ -153,11 +153,27 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
     setShowVerificationModal(false);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+  const handleManualLocationRequest = () => {
+    if (navigator.geolocation) {
+      setIsLoadingLocation(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          fetchLocationDetails(position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          setIsLoadingLocation(false);
+          setLocationError('Could not access your location. Please enter it manually.');
+          console.error('Geolocation error:', error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        }
+      );
+    } else {
+      setLocationError('Geolocation is not supported by your browser. Please enter location manually.');
+    }
   };
 
   return (
@@ -424,13 +440,45 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
                 <p className="text-green-600 dark:text-green-400 text-center text-sm">
                   Detected: {formData.city && `${formData.city}, `}{formData.state && `${formData.state}, `}{formData.region}
                 </p>
+                <button
+                  type="button"
+                  onClick={handleManualLocationRequest}
+                  className="mt-2 w-full px-3 py-2 text-sm bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                >
+                  🔄 Refresh Location
+                </button>
               </div>
             )}
 
             {locationError && !isLoadingLocation && (
               <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-2xl p-4">
-                <p className="text-red-700 dark:text-red-300 text-center font-medium">
+                <p className="text-red-700 dark:text-red-300 text-center font-medium mb-2">
                   ❌ {locationError}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleManualLocationRequest}
+                  className="w-full px-3 py-2 text-sm bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                >
+                  🔄 Try Again
+                </button>
+              </div>
+            )}
+
+            {!formData.region && !isLoadingLocation && !locationError && (
+              <div className="bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800 rounded-2xl p-4">
+                <p className="text-amber-700 dark:text-amber-300 text-center font-medium mb-2">
+                  📍 Auto-detect your location
+                </p>
+                <button
+                  type="button"
+                  onClick={handleManualLocationRequest}
+                  className="w-full px-3 py-2 text-sm bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition-colors"
+                >
+                  📍 Enable Location Access
+                </button>
+                <p className="text-amber-600 dark:text-amber-400 text-center text-xs mt-2">
+                  Or enter your details manually below
                 </p>
               </div>
             )}
@@ -450,8 +498,7 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
                   onChange={handleChange}
                   required
                   className="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-gray-900 dark:border-gray-100 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-600 transition-all"
-                  placeholder={isLoadingLocation ? "Loading..." : "Your Region"}
-                  disabled={isLoadingLocation}
+                  placeholder="Your Region"
                 />
               </div>
             </div>
@@ -471,8 +518,7 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
                   onChange={handleChange}
                   required
                   className="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-gray-900 dark:border-gray-100 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-600 transition-all"
-                  placeholder={isLoadingLocation ? "Loading..." : "Your City"}
-                  disabled={isLoadingLocation}
+                  placeholder="Your City"
                 />
               </div>
             </div>
@@ -492,8 +538,7 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
                   onChange={handleChange}
                   required
                   className="w-full pl-12 pr-4 py-3 rounded-2xl border-2 border-gray-900 dark:border-gray-100 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-600 transition-all"
-                  placeholder={isLoadingLocation ? "Loading..." : "Your State"}
-                  disabled={isLoadingLocation}
+                  placeholder="Your State"
                 />
               </div>
             </div>

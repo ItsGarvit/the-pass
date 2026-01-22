@@ -47,10 +47,37 @@ function AppContent() {
     setTheme(prefersDark ? "dark" : "light");
   }, []);
 
+  // Get user's location on app load
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          console.log('✓ Location detected:', position.coords.latitude, position.coords.longitude);
+        },
+        (error) => {
+          console.warn('⚠️ Geolocation permission denied or unavailable:', error.message);
+          // Don't block the app if location is not available
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 10000,
+          maximumAge: 300000, // Cache for 5 minutes
+        }
+      );
+    } else {
+      console.warn('⚠️ Geolocation is not supported by this browser');
+    }
+  }, []);
+
   // Handle email link verification on app load
   useEffect(() => {
     const handleEmailLinkVerification = async () => {
       if (auth && isSignInWithEmailLink(auth, window.location.href)) {
+        console.log('✉️ Email verification link detected');
         let email = localStorage.getItem('emailForSignIn');
         
         if (!email) {
@@ -60,23 +87,36 @@ function AppContent() {
         
         if (email) {
           try {
+            console.log('🔐 Verifying email link for:', email);
             await signInWithEmailLink(auth, email, window.location.href);
+            console.log('✅ Email verified successfully!');
             
             // Get pending signup data
             const pendingData = getPendingSignupData();
             if (pendingData) {
               // Clear the pending data
               clearPendingSignupData();
+              console.log('📝 Completing account creation with stored data');
               toast.success("Email verified successfully! Your account is being created...");
             } else {
+              console.log('✅ Email verified (no pending signup data)');
               toast.success("Email verified successfully!");
             }
             
             // Clean up the URL
             window.history.replaceState({}, document.title, window.location.pathname);
           } catch (error: any) {
-            console.error('Error verifying email link:', error);
-            toast.error(error.message || "Failed to verify email");
+            console.error('❌ Error verifying email link:', error.code, error.message);
+            
+            if (error.code === 'auth/invalid-email') {
+              toast.error("Invalid email address");
+            } else if (error.code === 'auth/expired-action-code') {
+              toast.error("Verification link has expired. Please sign up again.");
+            } else if (error.code === 'auth/invalid-action-code') {
+              toast.error("Invalid verification link. Please request a new one.");
+            } else {
+              toast.error(error.message || "Failed to verify email");
+            }
           }
         }
       }

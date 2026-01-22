@@ -34,8 +34,11 @@ export function EmailLinkVerificationModal({
 
     try {
       if (!auth) {
-        throw new Error("Firebase Auth not initialized");
+        console.error('❌ Firebase Auth not initialized');
+        throw new Error("Firebase Auth not initialized. Please check your Firebase configuration.");
       }
+
+      console.log('📧 Preparing to send verification email to:', email);
 
       // Store the signup data in localStorage so we can complete registration after verification
       localStorage.setItem(PENDING_SIGNUP_KEY, JSON.stringify({
@@ -51,23 +54,29 @@ export function EmailLinkVerificationModal({
         handleCodeInApp: true,
       };
 
+      console.log('📬 Sending sign-in link with URL:', actionCodeSettings.url);
       await sendSignInLinkToEmail(auth, email, actionCodeSettings);
       
       // Store email for verification step
       localStorage.setItem('emailForSignIn', email);
       
+      console.log('✅ Verification email sent successfully to:', email);
       setEmailSent(true);
-      toast.success("Verification link sent to your email!");
+      toast.success("Verification link sent to your email! Check your inbox.");
     } catch (err: any) {
-      console.error(err);
+      console.error('❌ Email verification error:', err);
       
       // Handle specific Firebase errors
       if (err.code === 'auth/invalid-email') {
-        setError("Invalid email address");
+        setError("Invalid email address format");
       } else if (err.code === 'auth/missing-continue-uri') {
-        setError("Configuration error. Please contact support.");
+        setError("Configuration error: Missing redirect URL. Please check Firebase settings.");
+      } else if (err.code === 'auth/operation-not-allowed') {
+        setError("Email/password authentication is not enabled in Firebase. Contact support.");
+      } else if (err.message && err.message.includes('PERMISSION_DENIED')) {
+        setError("Permission denied. Firebase Email/Password auth may not be enabled.");
       } else {
-        setError(err.message || "Failed to send verification link");
+        setError(err.message || "Failed to send verification link. Please try again.");
       }
       toast.error(err.message || "Failed to send verification link");
     } finally {
