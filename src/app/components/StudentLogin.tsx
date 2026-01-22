@@ -20,10 +20,25 @@ export function StudentLogin({ onBack, onSwitchToSignup }: StudentLoginProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    
+    // Validation
+    if (!email.trim()) {
+      setError('Please enter your email address');
+      return;
+    }
+    if (!password) {
+      setError('Please enter your password');
+      return;
+    }
+    if (password.length < 6) {
+      setError('Password should be at least 6 characters');
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
-      await login(email, password, 'student');
+      await login(email.trim(), password, 'student');
       // Success - the AuthContext will handle redirecting to dashboard
     } catch (err: any) {
       setError(err.message || "Invalid email or password. Please try again.");

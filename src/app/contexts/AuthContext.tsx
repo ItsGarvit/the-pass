@@ -378,6 +378,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string, userType: UserType): Promise<boolean> => {
     try {
       if (USE_DEMO_MODE) {
+        console.log('🎭 Attempting demo mode login');
         const demoUser = findDemoUser(email, password);
         
         if (!demoUser) {
@@ -395,14 +396,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return true;
       } else {
         if (!auth || !db) {
-          throw new Error('Firebase is not configured. Please set up Firebase or enable demo mode.');
+          console.error('❌ Firebase not initialized. auth:', !!auth, 'db:', !!db);
+          throw new Error('Firebase is not configured. Please set up Firebase credentials in your .env file or enable demo mode.');
         }
 
+        console.log('🔐 Attempting Firebase login');
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        console.log('✅ Firebase authentication successful');
+        
         const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
         
         if (!userDoc.exists()) {
-          throw new Error('User data not found');
+          console.error('❌ User data not found in Firestore for UID:', userCredential.user.uid);
+          throw new Error('User account not properly set up. Please sign up first.');
         }
 
         const userData = userDoc.data() as User;
@@ -412,13 +418,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           throw new Error(`This account is registered as a ${userData.userType}. Please use the correct login page.`);
         }
 
+        console.log('✅ User logged in successfully:', userData.email);
         setUser(userData);
         setIsAuthenticated(true);
 
         return true;
       }
     } catch (error: any) {
-      console.error('Login error:', error);
+      console.error('❌ Login error:', error.message, error.code);
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
         throw new Error('Invalid email or password');
       } else if (error.code === 'auth/invalid-email') {

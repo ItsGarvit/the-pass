@@ -66,18 +66,28 @@ if (!USE_DEMO_MODE) {
   const isConfigValid = validateFirebaseConfig();
   
   if (isConfigValid) {
-    // Initialize Firebase - check if app already exists
-    app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-    
-    // Initialize Firebase Authentication
-    auth = getAuth(app);
-    
-    // Initialize Firestore
-    db = getFirestore(app);
-    
-    console.log('✅ Firebase initialized successfully');
+    try {
+      // Initialize Firebase - check if app already exists
+      app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+      
+      // Initialize Firebase Authentication
+      auth = getAuth(app);
+      
+      // Initialize Firestore
+      db = getFirestore(app);
+      
+      console.log('✅ Firebase initialized successfully');
+    } catch (error) {
+      console.error('❌ Error initializing Firebase:', error);
+      console.log('⚠️ Falling back to DEMO MODE due to Firebase initialization error');
+      auth = null;
+      db = null;
+    }
   } else {
     console.error('❌ Firebase configuration is invalid. Please update your config or enable DEMO MODE.');
+    console.log('⚠️ Falling back to DEMO MODE');
+    auth = null;
+    db = null;
   }
 } else {
   console.log('🎭 Running in DEMO MODE - using localStorage instead of Firebase');
