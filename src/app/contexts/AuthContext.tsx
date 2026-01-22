@@ -270,6 +270,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setDemoCurrentUser(newUser);
         setUser(newUser);
         setIsAuthenticated(true);
+        console.log('✅ DEMO: Account created and auto-logged in as:', newUser.fullName);
 
         return true;
       } else {
@@ -282,6 +283,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           userData.email,
           password
         );
+        console.log('✅ Firebase: Account created, UID:', userCredential.user.uid);
 
         // Create user object based on type
         let newUser: User;
@@ -359,6 +361,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await setDoc(doc(db, 'users', userCredential.user.uid), newUser);
         setUser(newUser);
         setIsAuthenticated(true);
+        console.log('✅ Firebase: User profile saved and auto-logged in:', newUser.fullName);
 
         return true;
       }

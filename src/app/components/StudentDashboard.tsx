@@ -1,5 +1,7 @@
 import { motion } from "motion/react";
+import { useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { toast } from "sonner";
 import { 
   LogOut, 
   GraduationCap, 
@@ -47,6 +49,16 @@ export function StudentDashboard() {
   const [isEditingId, setIsEditingId] = useState(false);
   const [newId, setNewId] = useState("");
   const [idError, setIdError] = useState("");
+  const [hasShownWelcome, setHasShownWelcome] = useState(false);
+  
+  // Show welcome message on first login/signup
+  useEffect(() => {
+    if (user && !hasShownWelcome) {
+      toast.success(`Welcome ${user.fullName}! 🎉 Your account is ready.`);
+      setHasShownWelcome(true);
+      console.log('✅ Auto-login successful, welcome message shown');
+    }
+  }, [user, hasShownWelcome]);
   
   // Check if user needs to verify college (existing users without verification)
   const needsCollegeVerification = user?.userType === 'student' && user?.collegeVerified !== true;

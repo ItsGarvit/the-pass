@@ -151,6 +151,7 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
       await signup(formData, formData.password, 'student');
       console.log('✅ Signup successful');
       // Success - the AuthContext will handle redirecting to dashboard
+      // The toast will show automatically when user sees the dashboard
     } catch (err: any) {
       console.error('❌ Signup failed:', err.message);
       setError(err.message || "Registration failed. Please try again.");

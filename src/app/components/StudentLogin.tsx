@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import { useState } from "react";
 import { GraduationCap, Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
-
+import { toast } from "sonner";
 interface StudentLoginProps {
   onBack: () => void;
   onSwitchToSignup?: () => void;
@@ -41,6 +41,7 @@ export function StudentLogin({ onBack, onSwitchToSignup }: StudentLoginProps) {
     try {
       const result = await login(email.trim(), password, 'student');
       console.log('✅ Login successful');
+      toast.success('Welcome back! Redirecting to dashboard...');
       // Success - the AuthContext will handle redirecting to dashboard
     } catch (err: any) {
       console.error('❌ Login failed:', err.message);
