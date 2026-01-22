@@ -1,0 +1,26 @@
+@import "./fonts.css";
+@import "./tailwind.css";
+@import "./theme.css";
+@import "./hover-effects.css";
+
+/* Custom smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+/* For Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* For IE and Edge Legacy */
+body {
+  -ms-overflow-style: none;
+}

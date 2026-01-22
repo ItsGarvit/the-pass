@@ -1,0 +1,128 @@
+/* Enhanced Hover Effects for All Interactive Elements */
+
+/* Buttons - Enhanced hover with scale and shadow */
+button:not(:disabled) {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.3), 0 8px 10px -6px rgba(139, 92, 246, 0.2);
+}
+
+button:not(:disabled):active {
+  transform: translateY(0);
+  box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
+}
+
+/* Links - Smooth color transition */
+a {
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* Cards - Lift effect with glow */
+[class*="rounded-2xl"],
+[class*="rounded-3xl"],
+[class*="shadow"] {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[class*="rounded-2xl"]:hover,
+[class*="rounded-3xl"]:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(139, 92, 246, 0.25), 0 12px 20px -8px rgba(139, 92, 246, 0.15);
+}
+
+/* Input fields - Glow on focus */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+  border-color: rgb(139, 92, 246);
+}
+
+/* Icon hover - Rotate and scale */
+svg {
+  transition: all 0.3s ease;
+}
+
+button:hover svg,
+a:hover svg {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Gradient buttons - Enhanced glow */
+[class*="bg-gradient"]:hover {
+  box-shadow: 0 15px 35px -8px rgba(139, 92, 246, 0.4), 
+              0 10px 20px -6px rgba(99, 102, 241, 0.3),
+              0 0 20px rgba(139, 92, 246, 0.2);
+}
+
+/* Feature cards - Subtle pulse */
+@keyframes subtle-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+[class*="feature"]:hover,
+[class*="card"]:hover {
+  animation: subtle-pulse 2s ease-in-out infinite;
+}
+
+/* Navigation items - Underline animation */
+nav a {
+  position: relative;
+}
+
+nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgb(139, 92, 246), rgb(99, 102, 241));
+  transition: width 0.3s ease;
+}
+
+nav a:hover::after {
+  width: 100%;
+}
+
+/* Image hover - Zoom effect */
+img {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+img:hover {
+  transform: scale(1.05);
+}
+
+/* Checkbox and radio - Scale on hover */
+input[type="checkbox"],
+input[type="radio"] {
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:hover,
+input[type="radio"]:hover {
+  transform: scale(1.1);
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition-property: transform, box-shadow, opacity, background-color, border-color;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
