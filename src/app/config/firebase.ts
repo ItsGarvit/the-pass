@@ -4,7 +4,7 @@ import { getFirestore } from 'firebase/firestore';
 
 // Set to true to use demo mode (localStorage) instead of Firebase
 // Change to false once you've configured Firebase
-export const USE_DEMO_MODE = false; // <--- MAKE SURE THIS IS FALSE
+export const USE_DEMO_MODE = false; // <--- PRODUCTION MODE - Using real Firebase
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_apiKey,
