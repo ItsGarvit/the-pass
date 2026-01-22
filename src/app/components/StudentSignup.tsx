@@ -13,6 +13,8 @@ interface StudentSignupProps {
 }
 
 export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: StudentSignupProps) {
+  console.log('🎓 StudentSignup component rendering');
+  
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -35,6 +37,8 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const { signup } = useAuth();
+  
+  console.log('📍 UserLocation received:', userLocation);
 
   // Reset email verification when email changes
   useEffect(() => {
@@ -151,6 +155,13 @@ export function StudentSignup({ onBack, onSwitchToLogin, userLocation }: Student
   const handleEmailVerified = () => {
     setIsEmailVerified(true);
     setShowVerificationModal(false);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleManualLocationRequest = () => {
